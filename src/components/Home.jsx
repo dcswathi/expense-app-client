@@ -195,7 +195,7 @@ const Home = () => {
 
   return (
     <div className='home-container'>
-      <AddOrEditExpense show={show} setShow={setShow} expense={expenseToEdit} />
+      <AddOrEditExpense show={show} setShow={setShow} expense={expenseToEdit} categories={categoriesActive} />
       <div className="overview">
         <div className="budget-overview">
           <h2>Budget Overview</h2>
@@ -212,17 +212,18 @@ const Home = () => {
 
         <div className="category-overview">
           <h2>Category Splitwise Overview</h2>
-          {categories.length > 5
+          {categoriesToShow.length > 5
             ? <Table rows={categoriesToShow} columns={categoriesColumns} rowsPerPage={ROWS_PER_PAGE} noFirstAndLastPageControls />
-            : <PieChartGraph categoriesPieChart={categoriesPieChart} />}
+            : <PieChartGraph categoriesPieChart={categoriesPieChart} totalExpense={totalExpense} />}
         </div>
       </div>
 
       <div className='table-functions'>
         <div className="add-expense">
-          <Button variant="primary" onClick={() => setShow(true)}>
+          <Button disabled={!categoriesActive.length} variant="primary" onClick={() => setShow(true)}>
             Add Expense
           </Button>
+          {!categoriesActive.length && <div class="add-expense-hover">{"Please add categories first!"}</div>}
         </div>
         <div className="search-box">
           <form>

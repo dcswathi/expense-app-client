@@ -6,15 +6,14 @@ const setUserSuccess = (user) => ({
   payload: user,
 });
 
-export const saveUser = (userData) => (dispatch) => axios.post('http://localhost:3050/api/users/login', userData)
+export const loginUser = (userData) => (dispatch) =>
+  axios.post('http://localhost:3050/api/users/login', userData)
   .then((response) => {
     if (response && !response.data.hasOwnProperty('errors')) {
-      const user = parseJwt(response.data.token?.slice(7));
-      console.log('User response : ', user);
       localStorage.setItem('token', response.data.token);
-      dispatch(setUserSuccess(user));
       return Promise.resolve();
-    } if (response.data.hasOwnProperty('errors')) {
+    } 
+    if (response.data.hasOwnProperty('errors')) {
       throw new Error(response.data.errors);
     } else {
       throw new Error(response.data);
@@ -24,3 +23,23 @@ export const saveUser = (userData) => (dispatch) => axios.post('http://localhost
     console.log('Err: ', err);
     throw new Error(err);
   });
+
+export const startGetUserAccount = () => (dispatch) =>
+  axios
+    .get(
+      'http://localhost:3050/api/users/account/',
+      { headers: { Authorization: localStorage.getItem('token') } } 
+    )
+    .then((response) => {
+      if (response) {
+        const user = response.data;
+        console.log('User response : ', user);
+        dispatch(setUserSuccess(user));
+        return Promise.resolve();
+      }
+      throw new Error(response.data);
+    })
+    .catch((err) => {
+      console.log('Err: ', err);
+      throw new Error(err);
+    });

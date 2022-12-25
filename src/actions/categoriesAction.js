@@ -16,7 +16,7 @@ export const updateCategory = (category) => ({
 });
 
 export const startGetCategories = () => (dispatch) => {
-  axios.get('http://localhost:3050/api/categories', { headers: { Authorization: localStorage.getItem('token') } })
+  return axios.get('http://localhost:3050/api/categories', { headers: { Authorization: localStorage.getItem('token') } })
     .then((response) => {
       if (response) {
         const categories = response.data;
@@ -32,7 +32,7 @@ export const startGetCategories = () => (dispatch) => {
 };
 
 export const startPostCategory = (categoryData) => (dispatch) => {
-  axios.post('http://localhost:3050/api/categories', categoryData, { headers: { Authorization: localStorage.getItem('token') } })
+  return axios.post('http://localhost:3050/api/categories', categoryData, { headers: { Authorization: localStorage.getItem('token') } })
     .then((response) => {
       if (response) {
         const category = response.data;
@@ -48,12 +48,13 @@ export const startPostCategory = (categoryData) => (dispatch) => {
 };
 
 export const startUpdateCategory = (categoryData) => (dispatch) => {
-  axios.put(`http://localhost:3050/api/categories/${categoryData._id}`, categoryData, { headers: { Authorization: localStorage.getItem('token') } })
+  return axios.put(`http://localhost:3050/api/categories/${categoryData._id}`, categoryData, { headers: { Authorization: localStorage.getItem('token') } })
     .then((response) => {
       if (response) {
         const category = response.data;
         console.log('Category Update response : ', category);
         dispatch(updateCategory(category));
+        return Promise.resolve();
       } else {
         throw new Error(response.data);
       }
@@ -64,12 +65,13 @@ export const startUpdateCategory = (categoryData) => (dispatch) => {
 };
 
 export const startDeleteCategory = (categoryData) => (dispatch) => {
-  axios.delete(`http://localhost:3050/api/categories/${categoryData._id}`, { headers: { Authorization: localStorage.getItem('token') } })
+  return axios.delete(`http://localhost:3050/api/categories/${categoryData._id}`, { headers: { Authorization: localStorage.getItem('token') } })
     .then((response) => {
       if (response) {
         const category = response.data;
         console.log('Category delete response : ', category);
         dispatch(updateCategory(category));
+        return Promise.resolve();
       } else {
         throw new Error(response.data);
       }

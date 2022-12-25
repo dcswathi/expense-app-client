@@ -9,7 +9,7 @@ import * as Yup from 'yup';
 import moment from 'moment';
 import { saveExpense, updateExpense } from '../actions/expensesAction';
 
-function AddOrEditExpense({ show, setShow, expense }) {
+function AddOrEditExpense({ show, setShow, expense, categories }) {
   const categoryId = expense?.category || '';
   const title = expense?.title || '';
   const amount = expense?.amount || '';
@@ -19,7 +19,6 @@ function AddOrEditExpense({ show, setShow, expense }) {
 
   const dispatch = useDispatch();
 
-  const categories = useSelector((state) => state.categories);
   const budget = useSelector((state) => state.budget);
   const expenses = useSelector((state) => state.expenses);
 

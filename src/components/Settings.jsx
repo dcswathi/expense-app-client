@@ -36,13 +36,13 @@ const Settings = (props) => {
             deleteHandler: () => {
                 category.deletedAt
                 ? dispatch(startUpdateCategory({...category, deletedAt: null}))
-                    .catch((err) => {
+                    .then(() => {}).catch((err) => {
                         console.log('deleteHandler updateCategory Err: ', err);
                         alert("Undo failed!!!")
                         // TODO: Show there was an error
                     })
                 : dispatch(startDeleteCategory(category))
-                    .catch((err) => {
+                    .then(() => {}).catch((err) => {
                         console.log('deleteHandler deleteCategory Err: ', err);
                         alert("Delete failed!!!")
                         // TODO: Show there was an error
@@ -81,7 +81,7 @@ const Settings = (props) => {
     }
 
     return (
-        <div>
+        <div className='settings-container'>
             <form onSubmit={handleBudgetSubmit}>
                 <label htmlFor="budget">Total Budget</label>
                 <input

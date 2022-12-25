@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { Redirect, Route, withRouter } from 'react-router-dom';
 
-import { startGetBudget, startGetExpenses, startGetCategories } from '../actions';
+import { startGetBudget, startGetExpenses, startGetCategories, startGetUserAccount } from '../actions';
 
 import Welcome from './Welcome';
 import Home from './Home';
@@ -20,6 +20,7 @@ const Main = ({ handleAuth, userLoggedIn }) => {
       dispatch(startGetBudget());
       dispatch(startGetExpenses());
       dispatch(startGetCategories());
+      dispatch(startGetUserAccount());
     }
   }, [dispatch, userLoggedIn]);
 

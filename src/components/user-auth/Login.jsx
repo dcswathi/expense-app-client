@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { saveUser } from '../../actions/userAction';
+import { loginUser } from '../../actions/userAction';
 
 const Login = (props) => {
   const [email, setEmail] = useState('');
@@ -35,7 +35,7 @@ const Login = (props) => {
         password,
       };
 
-      dispatch(saveUser(formData))
+      dispatch(loginUser(formData))
         .then(() => {
           alert('Logged in successfully');
           props.history.push('/home');

@@ -157,6 +157,45 @@ code {
 
 /* Home */
 
+.add-expense {
+  position: relative;
+  display: inline-block;
+}
+
+.add-expense-hover {
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  padding: 5px 0;
+  border-radius: 6px;
+ 
+  /* Position the tooltip text - see examples below! */
+  position: absolute;
+  z-index: 1;
+}
+
+.add-expense .add-expense-hover {
+  top: -5px;
+  left: 105%;
+}
+
+.add-expense:hover .add-expense-hover {
+  visibility: visible;
+}
+
+.add-expense .add-expense-hover::after {
+  content: " ";
+  position: absolute;
+  top: 50%;
+  right: 100%; /* To the left of the tooltip */
+  margin-top: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent black transparent transparent;
+}
+
 .table-section {
   margin: 12px;
   width: fit-content;
@@ -180,4 +219,16 @@ code {
 .form-field {
   margin-bottom: 15px;
   width: 200px;
+}
+
+/* Settings */
+
+.settings-container {
+  margin: 16px;
+}
+
+/* Profile */
+
+.profile-container {
+  margin: 16px;
 }

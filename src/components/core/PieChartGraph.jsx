@@ -7,14 +7,14 @@ const options = {
 }
 
 const PieChartGraph = (props) => {
-  const { categoriesPieChart } = props
+  const { categoriesPieChart, totalExpense } = props
   const pieChartHeader = [['Category Name', 'Expenses']]
   const pieChartData = pieChartHeader.concat(categoriesPieChart)
 
   return (
     <div>
         {
-          categoriesPieChart.length
+          categoriesPieChart.length && totalExpense
             ? (<Chart
                 chartType="PieChart"
                 data={pieChartData}

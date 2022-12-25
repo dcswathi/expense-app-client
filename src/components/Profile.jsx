@@ -5,7 +5,7 @@ const Profile = (props) => {
   const user = useSelector((state) => state.user);
 
   return (
-    <div>
+    <div className='profile-container'>
       Profile
       <ul>
         <li>
