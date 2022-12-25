@@ -12,7 +12,6 @@ import LastPageIcon from '@mui/icons-material/LastPage';
 function TablePaginationActions(props) {
   const theme = useTheme();
   const { count, page, rowsPerPage, onPageChange, noFirstAndLastPageControls } = props;
-  console.log("TablePaginationActions", noFirstAndLastPageControls, props);
 
   const handleFirstPageButtonClick = (
     event,
@@ -68,8 +67,6 @@ function TablePaginationActions(props) {
 
 const Table = ({ columns, rows, rowsPerPage, withEdit, noFirstAndLastPageControls }) => {
   const [page, setPage] = useState(0);
-
-  console.log("Table", noFirstAndLastPageControls);
 
   useEffect(() => {
     if (!rows.length) {

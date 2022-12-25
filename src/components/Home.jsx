@@ -200,7 +200,7 @@ const Home = () => {
         </div>
       </div>
 
-      <div>
+      <div className='table-functions'>
         <div className="add-expense">
           <Button variant="primary" onClick={() => setShow(true)}>
             Add Expense
