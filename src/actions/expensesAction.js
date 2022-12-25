@@ -76,3 +76,18 @@ export const updateExpense = (expenseData) => (dispatch) => axios.put(`http://lo
     console.log('Err: ', err);
     throw new Error(err);
   });
+
+export const deleteExpense = (expenseData) => (dispatch) => axios.delete(`http://localhost:3050/api/expenses/${expenseData.id}`, { headers: { Authorization: localStorage.getItem('token') } })
+  .then((response) => {
+    if (response) {
+      const expense = response.data;
+      console.log('Delete Expense response : ', expense);
+      dispatch(putExpenseSuccess(expense));
+      return Promise.resolve(response);
+    }
+    throw new Error(response.data);
+  })
+  .catch((err) => {
+    console.log('Err: ', err);
+    throw new Error(err);
+  });

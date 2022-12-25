@@ -6,7 +6,7 @@ import Button from 'react-bootstrap/Button';
 import { CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 
-import { startGetBudget, startGetExpenses } from '../actions';
+import { deleteExpense, startGetBudget, startGetExpenses, updateExpense } from '../actions';
 import { startGetCategories } from '../actions/categoriesAction';
 import AddOrEditExpense from './AddOrEditExpense';
 import Table from './core/Table';
@@ -28,14 +28,21 @@ const getCategoryNamesAndAddToExpenses = (expenses, categories) => {
   return expensesCopy;
 };
 
-const getCategoriesToShow = (categories, expenses) => {
+const getExpensesForCategories = (expenses) => {
   const expensesForCategories = [];
   expenses.forEach((expense) => {
     if (expensesForCategories[expense.category] === undefined) {
       expensesForCategories[expense.category] = 0;
     }
-    expensesForCategories[expense.category] += expense.amount
+    if (!expense.deletedAt) {
+      expensesForCategories[expense.category] += expense.amount
+    }
   });
+  return expensesForCategories;
+}
+
+const getCategoriesToShow = (categories, expenses) => {
+  const expensesForCategories = getExpensesForCategories(expenses);  
   return categories.map((category) => {
     const { _id, name } = category;
     return {
@@ -52,13 +59,7 @@ const getCategoriesToShow = (categories, expenses) => {
 };
 
 const getCategoriesPieChart = (categories, expenses) => {
-  const expensesForCategories = [];
-  expenses.forEach((expense) => {
-    if (expensesForCategories[expense.category] === undefined) {
-      expensesForCategories[expense.category] = 0;
-    }
-    expensesForCategories[expense.category] += expense.amount
-  });
+  const expensesForCategories = getExpensesForCategories(expenses);
   return categories.map((category) => {
     const { _id, name } = category;
     return [
@@ -72,13 +73,10 @@ const calculatePercentage = (totalExpense, budget) => (totalExpense
   ? Math.floor((totalExpense / budget.amount) * 100)
   : 0);
 
-const calculateExpenses = (expenses) => {
-  let sum = 0;
-  expenses.forEach((ele) => {
-    sum += ele.amount;
-  });
-  return sum;
-};
+const calculateExpenses = (expenses) => expenses.reduce(
+    (previousSum, currentExpense) => currentExpense.deletedAt ? previousSum: previousSum + currentExpense.amount, 
+    0
+  );
 
 const expensesColumns = [{
   name: "Edit",
@@ -90,6 +88,8 @@ const expensesColumns = [{
   name: "Amount",
 }, {
   name: "Expense Date",
+}, {
+  name: "Delete / Undo",
 }];
 
 const categoriesColumns = [{
@@ -148,7 +148,7 @@ const Home = () => {
   };
 
   const expensesToShow = expensesWithCategoryNamesFiltered.map((expense) => {
-    const { _id, categoryName, title, amount, expenseDate } = expense;
+    const { _id, categoryName, title, amount, expenseDate, deletedAt } = expense;
     const expenseDateFormatted = moment(expenseDate).format('Do MMM YYYY');
     return {
       id: _id,
@@ -165,9 +165,25 @@ const Home = () => {
         id: 4,
         value: expenseDateFormatted
       }],
+      deleted: !!deletedAt,
       editHandler: () => {
         setExpenseToEdit(expense);
         setShow(true);
+      },
+      deleteHandler: () => {
+        !!deletedAt
+          ? dispatch(updateExpense({expense, deletedAt: null, id: expense._id}))
+              .catch((err) => {
+                console.log('deleteHandler updateExpense Err: ', err);
+                alert("Undo failed!!!")
+                // TODO: Show there was an error
+              })
+          : dispatch(deleteExpense({id: expense._id}))
+              .catch((err) => {
+                console.log('deleteHandler deleteExpense Err: ', err);
+                alert("Delete failed!!!")
+                // TODO: Show there was an error
+              });
       }
     };
   });
@@ -212,7 +228,13 @@ const Home = () => {
           </form>
         </div>
       </div>
-      <Table rows={expensesToShow} columns={expensesColumns} rowsPerPage={ROWS_PER_PAGE} withEdit />
+      <Table 
+        rows={expensesToShow}
+        columns={expensesColumns}
+        rowsPerPage={ROWS_PER_PAGE}
+        withEdit
+        withDelete
+      />
     </div>
   );
 };

@@ -163,6 +163,10 @@ code {
   width: 100%;
 }
 
+.table-row-deleted {
+  opacity: 30%;
+}
+
 /* Form */
 
 .error-message {

@@ -65,7 +65,7 @@ function TablePaginationActions(props) {
   );
 }
 
-const Table = ({ columns, rows, rowsPerPage, withEdit, noFirstAndLastPageControls }) => {
+const Table = ({ columns, rows, rowsPerPage, withEdit, withDelete, noFirstAndLastPageControls }) => {
   const [page, setPage] = useState(0);
 
   useEffect(() => {
@@ -85,6 +85,8 @@ const Table = ({ columns, rows, rowsPerPage, withEdit, noFirstAndLastPageControl
     (props) => <TablePaginationActions {...props} noFirstAndLastPageControls={noFirstAndLastPageControls} />, 
     [noFirstAndLastPageControls]
   );
+
+  console.log("Table", rows);
   
   return (
     <div className="table-section">
@@ -95,25 +97,32 @@ const Table = ({ columns, rows, rowsPerPage, withEdit, noFirstAndLastPageControl
           </tr>
         </thead>
         <tbody>
-          {
+          {rows.length ? 
             rows
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((row) => (
                 <tr key={row.id}>
                   {withEdit && (
                     <td>
-                      <button onClick={row.editHandler}>
+                      <button disabled={row.deleted} onClick={row.editHandler}>
                         Edit
                       </button>
                     </td>)}
                   {
                     row.columns.map((cell) => (
-                      <td key={cell.id}>{cell.value}</td>
+                      <td {...(withDelete && row.deleted ? {className: "table-row-deleted"}: {})} key={cell.id}>{cell.value}</td>
                     ))
                   }
+                  {withDelete && (
+                    <td>
+                      <button onClick={row.deleteHandler}>
+                        {row.deleted ? "Undo" : "Delete"}
+                      </button>
+                    </td>)}
                 </tr>
-            ))
-          }
+            )) : <tr>
+          <td>{'No data to display...'}</td>
+        </tr>}
         </tbody>
       </table>
       <TablePagination
