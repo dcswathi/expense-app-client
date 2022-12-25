@@ -13,13 +13,22 @@ const PieChartGraph = (props) => {
 
   return (
     <div>
-      <Chart
-        chartType="PieChart"
-        data={pieChartData}
-        options={options}
-        width={"100%"}
-        height={"400px"}
-      />      
+        {
+          categoriesPieChart.length
+            ? (<Chart
+                chartType="PieChart"
+                data={pieChartData}
+                options={options}
+                width={"100%"}
+                height={"400px"}
+              />)
+            : (
+                <div className='category-view-no-data'>
+                  {"No data to display..."}
+                  <br />
+                  {"Please add categories in the Settings page!"}
+                </div>)
+        }
     </div>
   )
 }

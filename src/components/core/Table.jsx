@@ -121,7 +121,7 @@ const Table = ({ columns, rows, rowsPerPage, withEdit, withDelete, noFirstAndLas
                     </td>)}
                 </tr>
             )) : <tr>
-          <td>{'No data to display...'}</td>
+          <td colSpan={6}>{'No data to display...'}</td>
         </tr>}
         </tbody>
       </table>

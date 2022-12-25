@@ -136,6 +136,10 @@ code {
   }
 }
 
+.category-view-no-data {
+  padding: 24px 8px 12px;
+}
+
 .category-content {
   padding: 12px;
   display: flex;

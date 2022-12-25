@@ -17,15 +17,17 @@ const ROWS_PER_PAGE = 5;
 
 const getCategoryNamesAndAddToExpenses = (expenses, categories) => {
   const expensesCopy = cloneDeep(expenses);
-  const categoriesHash = categories.reduce((acc, category) => {
-    acc[category._id] = category.name;
+  const categoriesHash = categories.reduce((acc, { _id, name, deletedAt }) => {
+    acc[_id] = { name, deletedAt };
     return acc;
   }, []);
-  expensesCopy.forEach((expense) => {
+  console.log("getCategoryNamesAndAddToExpenses", categoriesHash, expensesCopy.filter(expense => !categoriesHash[expense.category].deletedAt));
+  const expensesFiltered = expensesCopy.filter(expense => !categoriesHash[expense.category].deletedAt);
+  expensesFiltered.forEach((expense) => {
     // eslint-disable-next-line no-param-reassign
-    expense.categoryName = categoriesHash[expense.category];
+    expense.categoryName = categoriesHash[expense.category].name;
   });
-  return expensesCopy;
+  return expensesFiltered;
 };
 
 const getExpensesForCategories = (expenses) => {
@@ -73,10 +75,16 @@ const calculatePercentage = (totalExpense, budget) => (totalExpense
   ? Math.floor((totalExpense / budget.amount) * 100)
   : 0);
 
-const calculateExpenses = (expenses) => expenses.reduce(
-    (previousSum, currentExpense) => currentExpense.deletedAt ? previousSum: previousSum + currentExpense.amount, 
+const calculateExpenses = (categories, expenses) => {
+  const categoriesHash = categories.reduce((acc, category) => {
+    acc[category._id] = !!category.deletedAt;
+    return acc;
+  }, []);
+  return expenses.reduce(
+    (previousSum, currentExpense) => currentExpense.deletedAt || categoriesHash[currentExpense.category] ? previousSum: previousSum + currentExpense.amount, 
     0
   );
+};
 
 const expensesColumns = [{
   name: "Edit",
@@ -116,13 +124,6 @@ const Home = () => {
   }, [show]);
 
   useEffect(() => {
-    // invoke action creator
-    dispatch(startGetBudget());
-    dispatch(startGetExpenses());
-    dispatch(startGetCategories());
-  }, [dispatch]);
-
-  useEffect(() => {
     setExpensesWithCategoryNamesFiltered(
       expensesWithCategoryNames.filter(
         (expense) => expense.title.toLowerCase().includes(searchText.toLowerCase()),
@@ -139,7 +140,7 @@ const Home = () => {
   }, [expenses, categories]);
 
   useEffect(() => {
-    setTotalExpense(calculateExpenses(expenses));
+    setTotalExpense(calculateExpenses(categories, expenses));
     setPercentage(calculatePercentage(totalExpense, budget));
   }, [budget, expenses, totalExpense]);
 
@@ -188,8 +189,9 @@ const Home = () => {
     };
   });
 
-  const categoriesToShow = getCategoriesToShow(categories, expenses);
-  const categoriesPieChart = getCategoriesPieChart(categories, expenses);
+  const categoriesActive = categories.filter(category => !category.deletedAt)
+  const categoriesToShow = getCategoriesToShow(categoriesActive, expenses);
+  const categoriesPieChart = getCategoriesPieChart(categoriesActive, expenses);
 
   return (
     <div className='home-container'>

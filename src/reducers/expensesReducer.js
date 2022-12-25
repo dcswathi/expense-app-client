@@ -11,7 +11,6 @@ const expensesReducer = (state = expensesInitialState, action) => {
         }
 
         case 'PUT_EXPENSE' : {
-            console.log(state, action.payload);
             return state.map((ele) => 
                 ele._id === action.payload._id
                     ? {

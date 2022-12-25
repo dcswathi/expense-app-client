@@ -1,7 +1,14 @@
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import Table from './core/Table';
 import { startUpdateBudget } from '../actions/budgetAction'
-import { startGetCategories , startPostCategories } from '../actions/categoriesAction'
+import { startPostCategory, startUpdateCategory , startDeleteCategory } from '../actions/categoriesAction'
+
+const categoriesColumns = [{
+    name: "List of Categories",
+  }, {
+    name: "",
+  }];
 
 const Settings = (props) => {
     const [amount, setAmount] = useState('')
@@ -17,6 +24,35 @@ const Settings = (props) => {
         return state.categories
     })
 
+    const categoriesToShow = categories.map((category) => {
+        const { _id, name, deletedAt } = category;
+        return {
+            id: _id,
+            columns: [{
+                id: 1,
+                value: name
+            }],
+            deleted: !!deletedAt,
+            deleteHandler: () => {
+                category.deletedAt
+                ? dispatch(startUpdateCategory({...category, deletedAt: null}))
+                    .catch((err) => {
+                        console.log('deleteHandler updateCategory Err: ', err);
+                        alert("Undo failed!!!")
+                        // TODO: Show there was an error
+                    })
+                : dispatch(startDeleteCategory(category))
+                    .catch((err) => {
+                        console.log('deleteHandler deleteCategory Err: ', err);
+                        alert("Delete failed!!!")
+                        // TODO: Show there was an error
+                    });
+            }
+        };
+    });
+
+    console.log("Settings", categories);
+
     const handleBudgetSubmit = (e) => {
         e.preventDefault()
         const budgetData = {
@@ -31,7 +67,7 @@ const Settings = (props) => {
             name: category
         }
         console.log(categoryData)
-        dispatch(startPostCategories(categoryData))
+        dispatch(startPostCategory(categoryData))
     }
 
     const handleChange = (e) => {
@@ -50,7 +86,6 @@ const Settings = (props) => {
                 <label htmlFor="budget">Total Budget</label>
                 <input
                     type="text"
-                    // value={budget.amount ? budget.amount : amount} 
                     value={amount}
                     placeholder={budget.amount}
                     id="budget"
@@ -79,19 +114,12 @@ const Settings = (props) => {
                 />
             </form>
 
-            <div>
-                <p>Categories List</p>
-                <ul>
-                    {
-                        categories.map((category) => {
-                            return <li key={category._id}>
-                                    {category.name}
-                                    <button>Delete</button>
-                                </li>
-                        })
-                    }
-                </ul>
-            </div>
+            <Table 
+                rows={categoriesToShow}
+                columns={categoriesColumns}
+                rowsPerPage={10}
+                withDelete
+            />
         </div>
 
     )
