@@ -19,8 +19,8 @@ const PieChartGraph = (props) => {
                 chartType="PieChart"
                 data={pieChartData}
                 options={options}
-                width={"100%"}
-                height={"400px"}
+                // width={"100%"}
+                // height={"400px"}
               />)
             : (
                 <div className='category-view-no-data'>

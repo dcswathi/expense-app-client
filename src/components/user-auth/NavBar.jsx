@@ -1,28 +1,30 @@
 import React from 'react';
 import { Link, withRouter } from 'react-router-dom';
 
+const isSelected = (pathname, linkTo) => pathname === linkTo;
+
 const NavBar = (props) => {
-  const { userLoggedIn } = props;
+  console.log("NavBar", props);
+  const { userLoggedIn, location : { pathname } } = props;
+
+  const getClassName = (linkTo) => isSelected(pathname, linkTo) ? {className: "nav-bar-link-selected"} : {className: "nav-bar-link"};
 
   return (
     <ul className="nav-bar">
       {
-                        userLoggedIn ? (
-                          <>
-                            <Link className="nav-bar-link" to="/home">
-                              {' '}
-                              <li>Home</li>
-                            </Link>
-                            <Link className="nav-bar-link" to="/settings"><li> Settings</li></Link>
-                            <Link className="nav-bar-link" to="/profile"><li> Profile</li></Link>
-                          </>
-                        ) : (
-                          <>
-                            <Link className="nav-bar-link" to="/register"><li>  Register</li></Link>
-                            <Link className="nav-bar-link" to="/login"><li>  Login</li></Link>
-                          </>
-                        )
-                    }
+        userLoggedIn ? (
+          <>
+            <Link className="nav-bar-link" to="/home"><li {...getClassName("/home")}>Home</li></Link>
+            <Link className="nav-bar-link" to="/settings"><li {...getClassName("/settings")}>Settings</li></Link>
+            <Link className="nav-bar-link" to="/profile"><li {...getClassName("/profile")}>Profile</li></Link>
+          </>
+        ) : (
+          <>
+            <Link className="nav-bar-link" to="/register"><li {...getClassName("/register")}>Register</li></Link>
+            <Link className="nav-bar-link" to="/login"><li {...getClassName("/login")}>Login</li></Link>
+          </>
+        )
+      }
     </ul>
   );
 };

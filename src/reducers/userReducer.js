@@ -5,7 +5,9 @@ const userReducer = (state = userInitialState, action) => {
         case 'SET_USER': {
             return action.payload
         }
-
+        case 'PUT_USER': {
+            return action.payload
+        }
         default : {
             return {...state}
         }

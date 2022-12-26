@@ -69,65 +69,70 @@ const Register = (props) => {
   };
 
   return (
-    <div>
-      <h2> Register with us</h2>
+    <div className='register-container'>
+      <div className='register-inner-container'>
+        <h2> Register with us</h2>
+        <form className='register-form' onSubmit={handleSubmit}>
+          <input
+            type="text"
+            placeholder="Enter username"
+            value={username}
+            name="username"
+            onChange={handleChange}
+            size={30}
+          />
+          <br />
+          <div className='min-height-40'>
+            {usernameErr && (
+            <small style={{ color: 'red' }}>
+              {' '}
+              {usernameErr}
+              {' '}
+            </small>
+            )}
+          </div>
 
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          placeholder="enter username"
-          value={username}
-          name="username"
-          onChange={handleChange}
-        />
-        {usernameErr && (
-        <small style={{ color: 'red' }}>
-          {' '}
-          {usernameErr}
-          {' '}
-        </small>
-        )}
-        <br />
+          <input
+            type="text"
+            placeholder="Enter email"
+            value={email}
+            name="email"
+            onChange={handleChange}
+            size={30}
+          />
+          <br />
+          <div className='min-height-40'>
+            {emailErr && (
+            <small style={{ color: 'red' }}>
+              {' '}
+              {emailErr}
+              {' '}
+            </small>
+            )}
+          </div>
 
-        <input
-          type="text"
-          placeholder="enter email"
-          value={email}
-          name="email"
-          onChange={handleChange}
-        />
-        {emailErr && (
-        <small style={{ color: 'red' }}>
-          {' '}
-          {emailErr}
-          {' '}
-        </small>
-        )}
-        <br />
+          <input
+            type="text"
+            placeholder="Enter password"
+            value={password}
+            name="password"
+            onChange={handleChange}
+            size={30}
+          />
+          <br />
+          <div className='min-height-40'>
+            {passwordErr && (
+            <small style={{ color: 'red' }}>
+              {' '}
+              {passwordErr}
+              {' '}
+            </small>
+            )}
+          </div>
 
-        <input
-          type="text"
-          placeholder="enter password"
-          value={password}
-          name="password"
-          onChange={handleChange}
-        />
-        {passwordErr && (
-        <small style={{ color: 'red' }}>
-          {' '}
-          {passwordErr}
-          {' '}
-        </small>
-        )}
-        <br />
-        {' '}
-        <br />
-
-        <input
-          type="submit"
-          value="Register"
-        />
-      </form>
+          <button type="submit">Register</button>
+        </form>
+      </div>
     </div>
   );
 };

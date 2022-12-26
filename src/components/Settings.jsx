@@ -1,19 +1,21 @@
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import Button from 'react-bootstrap/Button';
+import {
+    Formik, Field, Form, ErrorMessage,
+} from 'formik';
+import * as Yup from 'yup';
 import Table from './core/Table';
 import { startUpdateBudget } from '../actions/budgetAction'
-import { startPostCategory, startUpdateCategory , startDeleteCategory } from '../actions/categoriesAction'
+import { startPostCategory, startUpdateCategory, startDeleteCategory } from '../actions/categoriesAction'
 
 const categoriesColumns = [{
     name: "List of Categories",
-  }, {
+}, {
     name: "",
-  }];
+}];
 
 const Settings = (props) => {
-    const [amount, setAmount] = useState('')
-    const [category, setCategory] = useState('')
-
     const dispatch = useDispatch()
 
     const budget = useSelector((state) => {
@@ -35,86 +37,104 @@ const Settings = (props) => {
             deleted: !!deletedAt,
             deleteHandler: () => {
                 category.deletedAt
-                ? dispatch(startUpdateCategory({...category, deletedAt: null}))
-                    .then(() => {}).catch((err) => {
-                        console.log('deleteHandler updateCategory Err: ', err);
-                        alert("Undo failed!!!")
-                        // TODO: Show there was an error
-                    })
-                : dispatch(startDeleteCategory(category))
-                    .then(() => {}).catch((err) => {
-                        console.log('deleteHandler deleteCategory Err: ', err);
-                        alert("Delete failed!!!")
-                        // TODO: Show there was an error
-                    });
+                    ? dispatch(startUpdateCategory({ ...category, deletedAt: null }))
+                        .then(() => { }).catch((err) => {
+                            console.log('deleteHandler updateCategory Err: ', err);
+                            alert("Undo failed!!!")
+                            // TODO: Show there was an error
+                        })
+                    : dispatch(startDeleteCategory(category))
+                        .then(() => { }).catch((err) => {
+                            console.log('deleteHandler deleteCategory Err: ', err);
+                            alert("Delete failed!!!")
+                            // TODO: Show there was an error
+                        });
             }
         };
     });
 
     console.log("Settings", categories);
 
-    const handleBudgetSubmit = (e) => {
-        e.preventDefault()
+    const handleBudgetSubmit = (values) => {
         const budgetData = {
-            amount: Number(amount)
+            amount: Number.parseInt(values.budget, 10)
         }
         dispatch(startUpdateBudget(budget._id, budgetData))
     }
 
-    const handleCategorySubmit = (e) => {
-        e.preventDefault()
+    const handleCategorySubmit = (values) => {
         const categoryData = {
-            name: category
+            name: values.category
         }
         console.log(categoryData)
         dispatch(startPostCategory(categoryData))
     }
 
-    const handleChange = (e) => {
-        const inputValue = e.target.name
-
-        if (inputValue === "budget") {
-            setAmount(e.target.value)
-        } else if (inputValue === "category") {
-            setCategory(e.target.value)
-        }
-    }
-
     return (
         <div className='settings-container'>
-            <form onSubmit={handleBudgetSubmit}>
-                <label htmlFor="budget">Total Budget</label>
-                <input
-                    type="text"
-                    value={amount}
-                    placeholder={budget.amount}
-                    id="budget"
-                    name="budget"
-                    onChange={handleChange}
-                />
-                <input
-                    type="submit"
-                    value="Update"
-                />
-            </form>
+            <div className='settings-forms'>
+                <Formik
+                    initialValues={{
+                        budget: budget.amount
+                    }}
+                    validationSchema={Yup.object({
+                        budget: Yup.number()
+                        .typeError("Must be a number")
+                        .positive("Amount can't be negative")
+                        .required("Amount is required")
+                    })}
+                    onSubmit={handleBudgetSubmit}
+                >
+                    <Form className='form-grid'>
+                        <div>
+                            <label htmlFor="budget">{"Total Budget"}</label>
+                        </div>
+                        <div>
+                            <Field name="budget"
+                                type="text"
+                                placeholder={budget.amount}
+                                id="budget"
+                            />
+                            <div className='min-height'>
+                                <ErrorMessage component="span" name="budget" className="error-message" />
+                            </div>
+                        </div>
+                        <div>
+                            <button type="submit"> Update </button>
+                        </div>
+                    </Form>
+                </Formik>
 
-            <form onSubmit={handleCategorySubmit}>
-                <label htmlFor="category">Category</label>
-                <input
-                    type="text"
-                    value={category}
-                    placeholder="Category name here"
-                    id="category"
-                    name="category"
-                    onChange={handleChange}
-                />
-                <input
-                    type="submit"
-                    value="Add"
-                />
-            </form>
-
-            <Table 
+                <Formik
+                    initialValues={{
+                        category: ""
+                    }}
+                    validationSchema={Yup.object({
+                        category: Yup.string()
+                        .required("Category is required")
+                        .notOneOf(categories.map(category => category.name), "Category name already exists")
+                    })}
+                    onSubmit={handleCategorySubmit}
+                >
+                    <Form className='form-grid'>
+                        <div>
+                            <label htmlFor="category">Category</label>
+                        </div>
+                        <div>
+                            <Field name="category"
+                                type="text"
+                                placeholder="Category name here"
+                                id="category"
+                            />
+                            <ErrorMessage component="span" name="category" className="error-message" />
+                        </div>
+                        <div>
+                            <button type="submit"> Add </button>
+                        </div>
+                    </Form>
+                </Formik>
+            </div>
+            <Table
                 rows={categoriesToShow}
                 columns={categoriesColumns}
                 rowsPerPage={10}

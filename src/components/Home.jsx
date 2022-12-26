@@ -220,10 +220,10 @@ const Home = () => {
 
       <div className='table-functions'>
         <div className="add-expense">
-          <Button disabled={!categoriesActive.length} variant="primary" onClick={() => setShow(true)}>
+          <button disabled={!categoriesActive.length} variant="primary" onClick={() => setShow(true)}>
             Add Expense
-          </Button>
-          {!categoriesActive.length && <div class="add-expense-hover">{"Please add categories first!"}</div>}
+          </button>
+          {!categoriesActive.length && <div className="add-expense-hover">{"Please add categories first!"}</div>}
         </div>
         <div className="search-box">
           <form>

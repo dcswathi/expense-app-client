@@ -58,47 +58,51 @@ const Login = (props) => {
   };
 
   return (
-    <div>
-      <h2> Login </h2>
+    <div className='login-container'>
+      <div className='login-inner-container'>
+        <h2> Login </h2>
+        <form  className='login-form' onSubmit={handleSubmit}>
+          <input
+            type="text"
+            placeholder="Enter email"
+            value={email}
+            name="email"
+            onChange={handleChange}
+            size={30}
+          />
+          <br />
+          <div className='min-height-40'>
+            {emailErr && (
+            <small style={{ color: 'red' }}>
+              {' '}
+              {emailErr}
+              {' '}
+            </small>
+            )}
+          </div>
 
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          placeholder="enter email"
-          value={email}
-          name="email"
-          onChange={handleChange}
-        />
-        {emailErr && (
-        <small style={{ color: 'red' }}>
-          {' '}
-          {emailErr}
-          {' '}
-        </small>
-        )}
-        <br />
+          <input
+            type="text"
+            placeholder="Enter password"
+            value={password}
+            name="password"
+            onChange={handleChange}
+            size={30}
+          />
+          <br />
+          <div className='min-height-40'>
+            {passwordErr && (
+            <small style={{ color: 'red' }}>
+              {' '}
+              {passwordErr}
+              {' '}
+            </small>
+            )}
+          </div>
 
-        <input
-          type="text"
-          placeholder="enter password"
-          value={password}
-          name="password"
-          onChange={handleChange}
-        />
-        {passwordErr && (
-        <small style={{ color: 'red' }}>
-          {' '}
-          {passwordErr}
-          {' '}
-        </small>
-        )}
-        <br />
-
-        <input
-          type="submit"
-          value="Login"
-        />
-      </form>
+          <button type="submit">Login</button>
+        </form>
+      </div>
     </div>
   );
 };

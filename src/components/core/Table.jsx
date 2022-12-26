@@ -104,7 +104,11 @@ const Table = ({ columns, rows, rowsPerPage, withEdit, withDelete, noFirstAndLas
                 <tr key={row.id}>
                   {withEdit && (
                     <td>
-                      <button disabled={row.deleted} onClick={row.editHandler}>
+                      <button 
+                        className={row.deleted && "button-disabled"}
+                        disabled={row.deleted} 
+                        onClick={row.editHandler}
+                      >
                         Edit
                       </button>
                     </td>)}
